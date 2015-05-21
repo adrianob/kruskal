@@ -109,8 +109,8 @@ func (a_list AdjList) Connected(v1 int, v2 int) bool {
 }
 
 //receives sorted weight list
-func (a_list AdjList) Kruskal(weight_list WList) AdjList {
-	var forest AdjList
+func (a_list AdjList) Kruskal(weight_list WList) (forest AdjList, total_weight int) {
+	total_weight = 0
 	inserted_vertices := 0
 	vertices_size := len(a_list)
 
@@ -122,9 +122,10 @@ func (a_list AdjList) Kruskal(weight_list WList) AdjList {
 	for _, v := range weight_list {
 		//if number of edges = vertices - 1 tree is spanning
 		if inserted_vertices == (vertices_size - 1) {
-			return forest
+			return forest, total_weight
 		}
 		if !forest.Connected(v[0], v[1]) {
+			total_weight += v[2]
 			forest[v[0]] = append(forest[v[0]], v[1])
 			forest[v[1]] = append(forest[v[1]], v[0])
 			inserted_vertices++
@@ -132,19 +133,22 @@ func (a_list AdjList) Kruskal(weight_list WList) AdjList {
 
 	}
 
-	return forest
+	return forest, total_weight
 
 }
 
 func main() {
 	adjacency_list, weight_list := read_graph()
 	var spanning_tree AdjList
+	var total_weight int
 
 	sort.Sort(weight_list)
-	spanning_tree = adjacency_list.Kruskal(weight_list)
+	spanning_tree, total_weight = adjacency_list.Kruskal(weight_list)
 	fmt.Println("arvore fornecida")
 	fmt.Println(adjacency_list)
 	fmt.Println("arvore geradora minima")
 	fmt.Println(spanning_tree)
+	fmt.Println("peso total")
+	fmt.Println(total_weight)
 
 }
