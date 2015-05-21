@@ -71,14 +71,15 @@ func read_graph() (adjacency_list AdjList, weight_list WList) {
 }
 
 func (a_list AdjList) Spanning() bool {
-
-	for i, v := range a_list {
-		for _, vertex := range a_list[i+1:] {
-			if !a_list.Connected(v[0], vertex[0]) {
+	if len(a_list) > 0 {
+		dfs := a_list.DFS(a_list[0][0])
+		for _, v := range dfs {
+			if v == false {
 				return false
 			}
 		}
 	}
+
 	return true
 }
 
@@ -110,6 +111,8 @@ func (a_list AdjList) Connected(v1 int, v2 int) bool {
 //receives sorted weight list
 func (a_list AdjList) Kruskal(weight_list WList) AdjList {
 	var forest AdjList
+	inserted_vertices := 0
+	vertices_size := len(a_list)
 
 	//separate graph into forests of 1 vertex
 	for _, v := range a_list {
@@ -117,12 +120,14 @@ func (a_list AdjList) Kruskal(weight_list WList) AdjList {
 	}
 
 	for _, v := range weight_list {
-		if forest.Spanning() {
+		//if number of edges = vertices - 1 tree is spanning
+		if inserted_vertices == (vertices_size - 1) {
 			return forest
 		}
 		if !forest.Connected(v[0], v[1]) {
 			forest[v[0]] = append(forest[v[0]], v[1])
 			forest[v[1]] = append(forest[v[1]], v[0])
+			inserted_vertices++
 		}
 
 	}
@@ -137,6 +142,9 @@ func main() {
 
 	sort.Sort(weight_list)
 	spanning_tree = adjacency_list.Kruskal(weight_list)
+	fmt.Println("arvore fornecida")
+	fmt.Println(adjacency_list)
+	fmt.Println("arvore geradora minima")
 	fmt.Println(spanning_tree)
 
 }
