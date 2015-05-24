@@ -1,4 +1,6 @@
 //autor: Adriano Carniel Benin - 173464
+//executável fornecido para Mac OS X, rodar 'go build grafo.go' para compilar em outro sistema
+
 package main
 
 import (
@@ -70,42 +72,26 @@ func read_graph() (adjacency_list AdjList, weight_list WList) {
 	return adjacency_list, weight_list
 }
 
-func (a_list AdjList) Spanning() bool {
-	if len(a_list) > 0 {
-		dfs := a_list.DFS(a_list[0][0])
-		for _, v := range dfs {
-			if v == false {
-				return false
-			}
-		}
-	}
-
-	return true
-}
-
-func DFSBool(a_list AdjList, v int, discovered []bool) []bool {
+func (a_list AdjList) ConnectedBool(v int, v2 int, discovered []bool) bool {
 	adj_list := a_list[v][1:len(a_list[v])] //get all  connected vertices
 
+	if v == v2 {
+		return true
+	}
 	discovered[v] = true
 	for _, vertex := range adj_list {
 		if !discovered[vertex] {
-			DFSBool(a_list, vertex, discovered)
+			a_list.ConnectedBool(vertex, v2, discovered)
 		}
 	}
 
-	return discovered
+	return false
 }
 
-func (a_list AdjList) DFS(v int) []bool {
+func (a_list AdjList) Connected(v int, v2 int) bool {
 	discovered := make([]bool, len(a_list))
 
-	return DFSBool(a_list, v, discovered)
-
-}
-
-func (a_list AdjList) Connected(v1 int, v2 int) bool {
-	v1_connected := a_list.DFS(v1)
-	return v1_connected[v2]
+	return a_list.ConnectedBool(v, v2, discovered)
 }
 
 //receives sorted weight list
