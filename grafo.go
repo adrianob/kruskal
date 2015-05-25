@@ -4,8 +4,10 @@
 package main
 
 import (
+	"bufio"
 	"fmt"
 	"io/ioutil"
+	"os"
 	"sort"
 	"strconv"
 	"strings"
@@ -57,7 +59,10 @@ func convertInput(lines []string) [][]int {
 
 //read text file into a adjacency and weight arrays
 func read_graph() (adjacency_list AdjList, weight_list WList) {
-	content, err := ioutil.ReadFile("grafo.txt")
+	reader := bufio.NewReader(os.Stdin)
+	fmt.Print("Arquivo de dados: ")
+	text, _, _ := reader.ReadLine()
+	content, err := ioutil.ReadFile(string(text))
 
 	if err != nil {
 		fmt.Println("arquivo nao existe")
@@ -94,12 +99,12 @@ func (a_list AdjList) Connected(v int, v2 int) bool {
 	return a_list.ConnectedBool(v, v2, discovered)
 }
 
-//receives sorted weight list
 func (a_list AdjList) Kruskal(weight_list WList) (forest AdjList, total_weight int) {
 	total_weight = 0
 	inserted_vertices := 0
 	vertices_size := len(a_list)
 
+	sort.Sort(weight_list)
 	//separate graph into forests of 1 vertex
 	for _, v := range a_list {
 		forest = append(forest, append(make([]int, 0), v[0]))
@@ -128,7 +133,6 @@ func main() {
 	var spanning_tree AdjList
 	var total_weight int
 
-	sort.Sort(weight_list)
 	spanning_tree, total_weight = adjacency_list.Kruskal(weight_list)
 	fmt.Println("arvore fornecida")
 	fmt.Println(adjacency_list)
