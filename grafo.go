@@ -1,4 +1,5 @@
 //autor: Adriano Carniel Benin - 173464
+//https://github.com/adrianob/kruskal
 //executável fornecido para Mac OS X, rodar 'go build grafo.go' para compilar em outro sistema
 //ex de saida:
 //lista de adjacencia
